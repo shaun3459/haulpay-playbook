@@ -1,4 +1,25 @@
 <!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Haulpay Campaign Intelligence",
+  "schemaVersion": 1,
+  "description": "HaulPay Outbound Campaign Intelligence Dashboard — live campaign metrics from Instantly & Apollo (shaun@gohaulpay.io workspace), plus strategy, 90-day plan, deliverables, and infrastructure costs. Playbook Ventures × HaulPay engagement PV-HP-GTM-2026-101A.",
+  "mcpTools": [
+    "mcp__d82eacf8-e0b7-4545-a553-5b2f54a839aa__apollo_users_api_profile",
+    "mcp__d82eacf8-e0b7-4545-a553-5b2f54a839aa__apollo_email_accounts_index",
+    "mcp__26e5ae52-b6f7-4673-bd29-f3136ab9e7dd__analytics_daily_account",
+    "mcp__26e5ae52-b6f7-4673-bd29-f3136ab9e7dd__list_campaigns",
+    "mcp__26e5ae52-b6f7-4673-bd29-f3136ab9e7dd__list_lead_lists"
+  ],
+  "mcpServerNames": [
+    "Apollo.io",
+    "Apollo.io",
+    "Instantly MCP",
+    "Instantly MCP",
+    "Instantly MCP"
+  ]
+}
+</script>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -261,12 +282,24 @@ tr:hover td{background:var(--gray-50)}
   <div style="background:#fff;border-radius:16px;padding:40px 36px;width:360px;max-width:90vw;box-shadow:0 24px 64px rgba(0,0,0,0.3);text-align:center">
     <img src="https://haulpay.io/wp-content/uploads/2021/08/haulpay_logo-color.svg" alt="HaulPay" style="height:36px;width:auto;margin:0 auto 12px;display:block">
     <div style="font-size:20px;font-weight:800;color:#0E2D6E;margin-bottom:4px">GTM Dashboard</div>
-    <div style="font-size:12px;color:#6B7280;margin-bottom:28px">Powered by Playbook Ventures · PV-HP-GTM-2026-101A</div>
-    <button id="lk-signin-btn" onclick="netlifyIdentity.open('login')"
-      style="width:100%;background:linear-gradient(90deg,#1B4FBE,#F47B20);color:#fff;border:none;border-radius:8px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.02em;margin-bottom:10px">
-      Sign In
+    <div style="font-size:12px;color:#6B7280;margin-bottom:28px">Powered by Playbook Ventures</div>
+    <!-- Google SSO -->
+    <button onclick="netlifyIdentity.open('login')"
+      style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#3c4043;border:1px solid #dadce0;border-radius:8px;padding:11px 14px;font-size:14px;font-weight:500;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:10px;transition:box-shadow .15s"
+      onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.15)'" onmouseout="this.style.boxShadow='0 1px 3px rgba(0,0,0,.08)'">
+      <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/><path d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.962L3.964 6.294C4.672 4.169 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+      Sign in with Google
     </button>
-    <div style="font-size:11px;color:#9CA3AF;margin-top:8px">Use your Google account or email · Contact shaun@gohaulpay.io for access</div>
+    <div style="display:flex;align-items:center;gap:10px;margin:6px 0 10px">
+      <div style="flex:1;height:1px;background:#E5E7EB"></div>
+      <span style="font-size:11px;color:#9CA3AF">or</span>
+      <div style="flex:1;height:1px;background:#E5E7EB"></div>
+    </div>
+    <button onclick="netlifyIdentity.open('login')"
+      style="width:100%;background:#F9FAFB;color:#374151;border:1px solid #E5E7EB;border-radius:8px;padding:11px 14px;font-size:14px;font-weight:500;cursor:pointer">
+      Sign in with email
+    </button>
+    <div style="font-size:11px;color:#9CA3AF;margin-top:14px">Contact shaun@gohaulpay.io for access</div>
   </div>
 </div>
 
@@ -673,7 +706,7 @@ tr:hover td{background:var(--gray-50)}
 <!-- ===== TAB: 90-DAY PLAN ===== -->
 <div id="tab-plan90" class="tab-panel">
   <div style="padding:14px 20px 0">
-    <div class="alert success">✅ Phase 1 is active. Setup fee of $1,500 received June 18, 2026. Engagement number: PV-HP-GTM-2026-101A.</div>
+    <div class="alert success">✅ Phase 1 is active. Setup fee of $1,500 received June 18, 2026.</div>
   </div>
   <div class="phases" id="phases-container"><!-- rendered by JS --></div>
 
@@ -738,7 +771,7 @@ tr:hover td{background:var(--gray-50)}
     <div>
       <div class="rb-amount">$1,500 ✓</div>
       <div class="rb-label">Phase 1 Setup Fee — Received</div>
-      <div class="rb-detail">Received June 18, 2026 · Agreement PV-HP-GTM-2026-101A</div>
+      <div class="rb-detail">Received June 18, 2026</div>
     </div>
     <div style="margin-left:auto;text-align:right;font-size:12px;color:#065F46;opacity:.8">
       Covers: 10 domains ($150) + 30 mailboxes ($480)<br>+ Playbook Ventures setup labor ($870)
@@ -1184,7 +1217,7 @@ tr:hover td{background:var(--gray-50)}
       <div id="completed-hardcoded" style="padding:4px 16px 10px">
         <div class="di" style="padding:9px 0;display:flex;align-items:flex-start;gap:9px;border-bottom:1px solid var(--gray-100)">
           <div class="di-check di-done" style="width:17px;height:17px;border-radius:50%;background:var(--green);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">✓</div>
-          <div style="flex:1"><div style="font-size:12px;font-weight:700">Agreement executed — PV-HP-GTM-2026-101A</div><div style="font-size:11px;color:var(--gray-400)">Signed Jun 9, 2026 · Both parties</div></div>
+          <div style="flex:1"><div style="font-size:12px;font-weight:700">Agreement executed</div><div style="font-size:11px;color:var(--gray-400)">Signed Jun 9, 2026 · Both parties</div></div>
           <div style="font-size:10px;color:var(--green);font-weight:700;white-space:nowrap">Jun 9 ✓</div>
         </div>
         <div class="di" style="padding:9px 0;display:flex;align-items:flex-start;gap:9px;border-bottom:1px solid var(--gray-100)">
