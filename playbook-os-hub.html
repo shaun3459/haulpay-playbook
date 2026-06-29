@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlaybookOS Agentic Outbound Engine — HaulPay × Playbook Ventures</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Variables ─────────────────────────────── */
+:root{
+  --navy:#0A1628; --navy-mid:#0F1E3A; --navy-card:#131E30; --navy-dark:#070E1A;
+  --hp-blue:#1B4FD8; --hp-blue-dark:#1540B8; --hp-blue-glow:rgba(27,79,216,.3);
+  --white:#fff; --off-white:#F4F6FA; --slate:#F1F5F9; --slate-b:#E2E8F0;
+  --tp:#0F172A; --ts:#64748B;
+  --green:#22C55E; --green-bg:#F0FDF4; --green-b:#86EFAC; --green-dark:#16A34A;
+  --amber:#F59E0B; --amber-bg:#FFFBEB; --amber-b:#FCD34D; --amber-dark:#D97706;
+  --red:#EF4444; --red-bg:#FEF2F2; --red-b:#FCA5A5; --red-dark:#DC2626;
+  --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:#fff;color:var(--tp);font-size:15px;line-height:1.65;overflow-x:hidden}
+h1{font-size:clamp(2rem,5vw,3.8rem);font-weight:800;line-height:1.08;letter-spacing:-.035em}
+h2{font-size:clamp(1.5rem,3vw,2.4rem);font-weight:700;letter-spacing:-.025em;line-height:1.15}
+h3{font-size:1.05rem;font-weight:700;letter-spacing:-.01em}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+
+/* ── Layout ─────────────────────────────────── */
+.container{max-width:1200px;margin:0 auto;padding:0 28px}
+.sec{padding:80px 0}
+.sec-label{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.sec-label::before{content:'';display:inline-block;width:20px;height:2px;background:var(--green)}
+.sec-title{margin-bottom:10px}
+.sec-sub{color:var(--ts);font-size:1.05rem;max-width:560px;margin-bottom:48px;line-height:1.7}
+
+/* ── Status Dot ─────────────────────────────── */
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;flex-shrink:0;cursor:pointer;transition:transform .15s}
+.dot:hover{transform:scale(1.3)}
+.dot-green{background:var(--green)}
+.dot-green.pulse{animation:pg 2s infinite}
+.dot-amber{background:var(--amber)}
+.dot-red{background:var(--red)}
+@keyframes pg{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}60%{box-shadow:0 0 0 7px rgba(34,197,94,0)}}
+
+/* ── Badge ──────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:20px;font-size:10.5px;font-weight:700;letter-spacing:.04em}
+.badge-green{background:var(--green-bg);color:var(--green-dark);border:1px solid var(--green-b)}
+.badge-amber{background:var(--amber-bg);color:var(--amber-dark);border:1px solid var(--amber-b)}
+.badge-red{background:var(--red-bg);color:var(--red-dark);border:1px solid var(--red-b)}
+.badge-navy{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.15)}
+
+/* ── Buttons ────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:9px;font-size:14.5px;font-weight:700;cursor:pointer;transition:all .2s;border:2px solid transparent;font-family:inherit;letter-spacing:-.01em;text-decoration:none}
+.btn-primary{background:var(--hp-blue);color:#fff;border-color:var(--hp-blue)}
+.btn-primary:hover{background:var(--hp-blue-dark);border-color:var(--hp-blue-dark);transform:translateY(-1px);box-shadow:0 8px 28px var(--hp-blue-glow)}
+.btn-outline{background:transparent;color:#fff;border-color:rgba(255,255,255,.6)}
+.btn-outline:hover{background:rgba(255,255,255,.08);border-color:#fff}
+
+/* ── PASSWORD GATE ──────────────────────────── */
+#lockscreen{position:fixed;inset:0;background:linear-gradient(135deg,#070E1A 0%,#0A1628 55%,#0F1E3A 100%);z-index:99999;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif}
+.lk-card{background:#fff;border-radius:18px;padding:44px 40px;width:360px;max-width:92vw;box-shadow:0 32px 80px rgba(0,0,0,.55);text-align:center}
+.lk-logo{width:160px;height:auto;margin:0 auto 20px;display:flex;align-items:center;justify-content:center}
+.lk-card h2{color:var(--navy);font-size:1.25rem;margin-bottom:4px}
+.lk-card p{font-size:12px;color:var(--ts);margin-bottom:28px}
+.lk-input{width:100%;border:2px solid var(--slate-b);border-radius:8px;padding:12px 14px;font-size:14px;font-family:inherit;outline:none;transition:border .15s;margin-bottom:8px}
+.lk-input:focus{border-color:var(--hp-blue)}
+.lk-error{font-size:12px;color:var(--red);min-height:17px;margin-bottom:8px}
+.lk-btn{width:100%;background:linear-gradient(90deg,var(--hp-blue),#2563EB);color:#fff;border:none;border-radius:8px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.lk-btn:hover{opacity:.92}
+.lk-hint{font-size:11px;color:#9CA3AF;margin-top:16px}
+
+/* ── SECTION 1: HERO ────────────────────────── */
+#hero{position:relative;min-height:88vh;display:flex;align-items:center;background:var(--navy);overflow:hidden;padding:80px 0}
+#hero-canvas{position:absolute;inset:0;pointer-events:none}
+.hero-content{position:relative;z-index:2;max-width:820px}
+.hero-tag{font-family:var(--mono);font-size:11.5px;color:var(--green);letter-spacing:.15em;text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:10px}
+.hero-tag::before{content:'';width:28px;height:2px;background:var(--green);display:inline-block}
+.hero-h1{color:#fff;margin-bottom:26px}
+.hero-copy{color:rgba(255,255,255,.72);font-size:1.08rem;line-height:1.78;max-width:700px;margin-bottom:24px}
+.hero-brand{color:var(--green);font-style:italic;font-size:1.05rem;font-weight:500;margin-bottom:44px}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+
+/* ── SECTION 2: STATUS BAR ──────────────────── */
+#statusbar{background:var(--navy-mid);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05)}
+.sb-inner{display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none}
+.sb-inner::-webkit-scrollbar{display:none}
+.sb-field{flex:1;min-width:165px;padding:18px 20px;border-right:1px solid rgba(255,255,255,.065);position:relative;cursor:default}
+.sb-field:last-child{border-right:none}
+.sb-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.35);margin-bottom:7px}
+.sb-row{display:flex;align-items:center;gap:8px}
+.sb-val{font-family:var(--mono);font-size:11.5px;color:#fff;font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.sb-val:hover{color:var(--green)}
+.sb-input{display:none;background:transparent;border:none;font-family:var(--mono);font-size:11.5px;color:#fff;width:100%;outline:none;padding:0}
+.sb-pencil{opacity:0;font-size:11px;transition:opacity .2s;flex-shrink:0;color:rgba(255,255,255,.3)}
+.sb-field:hover .sb-pencil{opacity:1}
+@media(max-width:700px){.sb-inner{flex-wrap:wrap}.sb-field{flex:1 1 50%;border-bottom:1px solid rgba(255,255,255,.065)}}
+
+/* ── SECTION 3: ICPs ────────────────────────── */
+#icps{background:var(--off-white)}
+.icp-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.icp-card{background:#fff;border-radius:var(--radius);border:1px solid var(--slate-b);overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.05)}
+.icp-head{padding:24px 26px;border-bottom:1px solid var(--slate-b)}
+.icp-ht{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.icp-title{font-size:1.25rem;font-weight:800}
+.icp-subtitle{font-size:12.5px;color:var(--ts)}
+.icp-body{padding:6px 0}
+.icp-row{display:flex;justify-content:space-between;align-items:baseline;padding:9px 26px;border-bottom:1px solid var(--slate);font-size:13px}
+.icp-row:last-of-type{border-bottom:none}
+.icp-k{color:var(--ts);font-weight:500;flex-shrink:0;min-width:130px}
+.icp-v{color:var(--tp);font-weight:600;text-align:right}
+.icp-expand-btn{width:100%;background:var(--off-white);border:none;border-top:1px solid var(--slate-b);padding:13px 26px;font-size:12px;font-weight:700;color:var(--hp-blue);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .15s}
+.icp-expand-btn:hover{background:var(--slate)}
+.icp-chevron{font-size:11px;transition:transform .25s}
+.icp-chevron.open{transform:rotate(180deg)}
+.icp-expanded{display:none;padding:22px 26px;background:var(--off-white);border-top:1px solid var(--slate-b)}
+.icp-expanded.open{display:block}
+.exp-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--ts);margin-bottom:14px}
+.seq-step{display:flex;gap:13px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--slate-b)}
+.seq-step:last-child{border-bottom:none}
+.seq-num{width:26px;height:26px;border-radius:50%;background:var(--hp-blue);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.seq-body{flex:1}
+.seq-day{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.seq-desc{font-size:12.5px;color:var(--tp);font-weight:500;line-height:1.45}
+.kpi-strip{display:flex;gap:14px;flex-wrap:wrap;margin-top:20px}
+.kpi-pill{background:#fff;border:1px solid var(--slate-b);border-radius:8px;padding:9px 14px;font-size:12px}
+.kpi-pill-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ts);margin-bottom:3px}
+.kpi-pill-val{font-weight:700;color:var(--hp-blue)}
+.icp-note-bottom{font-size:12px;color:var(--ts);font-style:italic;margin-top:18px;text-align:center;padding:14px;background:var(--slate);border-radius:8px}
+@media(max-width:700px){.icp-grid{grid-template-columns:1fr}}
+
+/* ── SECTION 4: AGENTS ──────────────────────── */
+#agents{background:var(--slate)}
+.agents-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.agent-card{background:#fff;border-radius:var(--radius);border:1px solid var(--slate-b);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04);cursor:pointer;transition:box-shadow .2s,transform .2s}
+.agent-card:hover{box-shadow:0 10px 36px rgba(0,0,0,.1);transform:translateY(-2px)}
+.agent-front{padding:22px 20px}
+.agent-icon{font-size:26px;margin-bottom:14px;display:block}
+.agent-name{font-size:1rem;font-weight:800;margin-bottom:6px}
+.agent-job{font-size:12px;color:var(--ts);line-height:1.55;margin-bottom:18px}
+.agent-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--slate);padding-top:14px;margin-top:2px}
+.agent-status-row{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600}
+.agent-toggle{font-size:11px;color:var(--hp-blue);font-weight:600;display:flex;align-items:center;gap:4px}
+.agent-detail{display:none;padding:0 20px 20px;border-top:1px solid var(--slate)}
+.agent-detail.open{display:block}
+.detail-section{margin-top:14px}
+.detail-title{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.detail-title.allowed{color:var(--green-dark)}
+.detail-title.never{color:var(--red-dark)}
+.detail-list li{font-size:11.5px;color:var(--ts);padding:3.5px 0;padding-left:16px;position:relative;line-height:1.45}
+.allowed-list li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:700;font-size:11px}
+.never-list li::before{content:'✕';position:absolute;left:0;color:var(--red);font-size:10px;font-weight:700;top:1px}
+@media(max-width:1024px){.agents-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:580px){.agents-grid{grid-template-columns:1fr}}
+
+/* ── SECTION 5: MODIFICATION LADDER ────────── */
+#ladder{background:var(--navy);padding:80px 0}
+.ladder-wrap{margin-top:52px;display:flex;flex-direction:column;align-items:center}
+.ladder-tier{border-radius:12px;overflow:hidden;cursor:pointer;transition:box-shadow .2s,transform .15s;margin-bottom:0}
+.ladder-tier:hover{transform:scale(1.01);box-shadow:0 12px 48px rgba(0,0,0,.4)}
+.lt-red{background:linear-gradient(135deg,#7F1D1D 0%,#991B1B 100%);max-width:540px;width:100%}
+.lt-amber{background:linear-gradient(135deg,#78350F 0%,#92400E 100%);max-width:720px;width:100%}
+.lt-green{background:linear-gradient(135deg,#14532D 0%,#166534 100%);max-width:900px;width:100%}
+.ladder-connector{display:flex;flex-direction:column;align-items:center;padding:6px 0;opacity:.35}
+.connector-line{width:2px;height:18px;background:#fff}
+.connector-arrow{color:#fff;font-size:13px;margin-top:-4px}
+.tier-head{padding:22px 28px;display:flex;align-items:center;gap:16px}
+.tier-icon{font-size:22px;flex-shrink:0}
+.tier-label-group{flex:1}
+.tier-level{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.55);margin-bottom:3px}
+.tier-name{font-size:1.05rem;font-weight:800;color:#fff;line-height:1.2}
+.tier-autonomy{font-size:11.5px;font-weight:600;color:rgba(255,255,255,.85);margin-top:3px}
+.tier-caret{font-size:13px;color:rgba(255,255,255,.4);transition:transform .3s;flex-shrink:0}
+.tier-caret.open{transform:rotate(180deg)}
+.tier-body{display:none;border-top:1px solid rgba(255,255,255,.12);padding:20px 28px 24px}
+.tier-body.open{display:block}
+.tier-scope-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4);margin-bottom:10px}
+.tier-scope li{font-size:12.5px;color:rgba(255,255,255,.78);padding:4px 0;padding-left:16px;position:relative;line-height:1.45}
+.tier-scope li::before{content:'→';position:absolute;left:0;color:rgba(255,255,255,.35)}
+.tier-rule{margin-top:14px;padding:11px 14px;background:rgba(0,0,0,.22);border-radius:8px;font-size:12px;color:rgba(255,255,255,.65);font-style:italic;border-left:3px solid rgba(255,255,255,.25);line-height:1.55}
+.tier-example{margin-top:14px;background:rgba(0,0,0,.28);border-radius:8px;padding:14px 16px}
+.tier-example-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.35);margin-bottom:8px}
+.tier-example-text{font-family:var(--mono);font-size:11.5px;color:rgba(255,255,255,.82);line-height:1.65}
+
+/* ── SECTION 6: AGENT CONSTITUTION ─────────── */
+#agent-constitution{background:#fff}
+.const-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:40px}
+.const-col{background:var(--off-white);border-radius:var(--radius);padding:28px 24px;border:1px solid var(--slate-b)}
+.const-col h3{margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--slate-b)}
+.const-col li{font-size:12.5px;color:var(--ts);padding:6.5px 0;border-bottom:1px solid var(--slate-b);padding-left:16px;position:relative;line-height:1.45}
+.const-col li::before{content:'•';position:absolute;left:0;color:var(--hp-blue);font-weight:700}
+.const-col li:last-child{border-bottom:none}
+.const-callout{background:var(--off-white);border:1.5px solid var(--slate-b);border-radius:var(--radius);padding:30px 36px;text-align:center;max-width:780px;margin:0 auto}
+.const-callout p{color:var(--ts);font-size:13.5px;line-height:1.8;margin-bottom:14px}
+.const-callout p:last-child{margin-bottom:0}
+.contract-tag{font-family:var(--mono);font-size:12.5px;font-weight:500;color:var(--hp-blue);background:var(--off-white);border:1px solid var(--slate-b);display:inline-block;padding:6px 14px;border-radius:6px;margin-top:6px}
+@media(max-width:900px){.const-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:580px){.const-grid{grid-template-columns:1fr}}
+
+/* ── SECTION 7: CLAIMS ──────────────────────── */
+#claims{background:var(--slate)}
+.claims-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.claim-card{background:#fff;border-radius:var(--radius);border:1px solid var(--slate-b);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.claim-head{padding:14px 20px;background:var(--off-white);border-bottom:1px solid var(--slate-b)}
+.claim-topic{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--ts)}
+.claim-body{padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.claim-item{padding:13px 15px;border-radius:9px;font-size:13px;line-height:1.58}
+.claim-approved{background:var(--green-bg);border:1px solid var(--green-b)}
+.claim-not{background:var(--red-bg);border:1px solid var(--red-b)}
+.claim-label{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.claim-label.yes{color:var(--green-dark)}
+.claim-label.no{color:var(--red-dark)}
+.claim-text{color:var(--tp);line-height:1.55}
+.claim-reason{font-size:11.5px;color:var(--ts);font-style:italic;margin-top:7px;line-height:1.5}
+@media(max-width:700px){.claims-grid{grid-template-columns:1fr}}
+
+/* ── SECTION 8: AUTONOMY TABLE ──────────────── */
+#autonomy{background:#fff}
+.filter-bar{display:flex;gap:8px;margin-bottom:26px;flex-wrap:wrap}
+.filter-btn{padding:7px 16px;border-radius:20px;border:1.5px solid var(--slate-b);font-size:12px;font-weight:700;cursor:pointer;background:#fff;color:var(--ts);font-family:inherit;transition:all .15s;display:inline-flex;align-items:center;gap:7px}
+.filter-btn.active{border-color:var(--hp-blue);color:var(--hp-blue);background:var(--off-white)}
+.filter-btn.f-green.active{border-color:var(--green);color:var(--green-dark);background:var(--green-bg)}
+.filter-btn.f-amber.active{border-color:var(--amber);color:var(--amber-dark);background:var(--amber-bg)}
+.filter-btn.f-red.active{border-color:var(--red);color:var(--red-dark);background:var(--red-bg)}
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--slate-b)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;padding:11px 16px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ts);border-bottom:1.5px solid var(--slate-b);white-space:nowrap;background:var(--off-white)}
+td{padding:12px 16px;border-bottom:1px solid var(--slate);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--off-white)}
+.al{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.al-green{background:var(--green-bg);color:var(--green-dark);border:1px solid var(--green-b)}
+.al-amber{background:var(--amber-bg);color:var(--amber-dark);border:1px solid var(--amber-b)}
+.al-red{background:var(--red-bg);color:var(--red-dark);border:1px solid var(--red-b)}
+td.td-action{font-weight:600;color:var(--tp)}
+td.td-desc{color:var(--ts)}
+
+/* ── SECTION 9: HAULPAY CONTROLS ───────────── */
+#controls{background:var(--navy);padding:80px 0}
+.controls-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:48px}
+.ctrl-card{background:var(--navy-card);border-radius:var(--radius);border:1px solid rgba(255,255,255,.07);padding:26px 20px;border-left:4px solid var(--green);transition:transform .2s,box-shadow .2s}
+.ctrl-card:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(0,0,0,.35)}
+.ctrl-icon{font-size:26px;margin-bottom:16px;display:block}
+.ctrl-title{font-size:1rem;font-weight:800;color:#fff;margin-bottom:11px;line-height:1.25}
+.ctrl-body{font-size:12px;color:rgba(255,255,255,.55);line-height:1.65}
+@media(max-width:1060px){.controls-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:580px){.controls-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* ── SECTION 10: TOOLS ──────────────────────── */
+#tools{background:var(--slate)}
+.tools-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.tool-card{background:#fff;border-radius:var(--radius);border:1px solid var(--slate-b);padding:22px 14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.04);transition:transform .2s,box-shadow .2s}
+.tool-card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.09)}
+.tool-logo{font-size:26px;margin-bottom:11px;display:block}
+.tool-name{font-size:13px;font-weight:800;margin-bottom:5px}
+.tool-role{font-size:11px;color:var(--ts);line-height:1.45;margin-bottom:11px}
+.tool-status{display:flex;align-items:center;justify-content:center;gap:6px;font-size:10.5px;font-weight:700;color:var(--ts)}
+@media(max-width:900px){.tools-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:500px){.tools-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* ── SECTION 11: THREE RULES ────────────────── */
+#three-rules{background:var(--navy);padding:110px 0}
+.rules-wrap{max-width:860px;margin:0 auto;text-align:center}
+.rule-block{margin-bottom:64px;opacity:0;transform:translateY(28px);transition:opacity .75s ease,transform .75s ease}
+.rule-block.visible{opacity:1;transform:none}
+.rule-block:nth-child(2){transition-delay:.18s}
+.rule-block:nth-child(3){transition-delay:.36s}
+.rule-quote{font-size:clamp(1.45rem,3.5vw,2.6rem);font-weight:800;color:#fff;line-height:1.22;letter-spacing:-.025em}
+.rule-quote.green{color:var(--green)}
+.rules-divider{width:56px;height:2px;background:rgba(255,255,255,.12);margin:56px auto}
+.rules-footer-text{font-size:12.5px;color:rgba(255,255,255,.38);line-height:1.8;max-width:540px;margin:0 auto}
+
+/* ── SECTION 12: FOOTER ─────────────────────── */
+#footer{background:var(--navy-dark);padding:56px 0 28px}
+.footer-top{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,.07)}
+.footer-col{font-size:13px;color:rgba(255,255,255,.45);line-height:2.1}
+.footer-col strong{color:rgba(255,255,255,.8);font-weight:600}
+.footer-col a{color:var(--green)}
+.footer-bottom{padding-top:26px;text-align:center;font-size:10.5px;color:rgba(255,255,255,.2);line-height:1.9}
+@media(max-width:580px){.footer-top{grid-template-columns:1fr}}
+</style>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     AUTH GATE (Netlify Identity)
+════════════════════════════════════════════ -->
+<div id="lockscreen">
+  <div class="lk-card">
+    <div class="lk-logo">
+      <img src="https://haulpay.io/wp-content/uploads/2021/08/haulpay_logo-color.svg" alt="HaulPay" style="width:100%;height:auto">
+    </div>
+    <h2>PlaybookOS Program Hub</h2>
+    <p>Playbook Ventures · PV-HP-GTM-2026-101A</p>
+    <button class="lk-btn" id="lk-signin-btn" onclick="netlifyIdentity.open('login')">Sign In</button>
+    <p class="lk-hint">Use your Google account or email · Contact shaun@playbookventures.io for access</p>
+  </div>
+</div>
+
+<!-- Floating user pill (shown after login) -->
+<div id="user-pill" style="display:none;position:fixed;top:16px;right:20px;z-index:9000;background:rgba(10,22,40,.85);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:40px;padding:7px 14px 7px 10px;display:none;align-items:center;gap:10px;font-size:12px;color:rgba(255,255,255,.8)">
+  <span id="hub-user-name">👤</span>
+  <button onclick="netlifyIdentity.logout()" style="background:rgba(239,68,68,.15);color:#FCA5A5;border:1px solid rgba(239,68,68,.3);border-radius:20px;padding:3px 10px;font-size:11px;cursor:pointer;font-weight:600">Sign Out</button>
+</div>
+
+<script>
+(function(){
+  netlifyIdentity.init({ APIUrl: 'https://haulpay-dashboard.netlify.app/.netlify/identity' });
+
+  function showHub(user) {
+    document.getElementById('lockscreen').style.display = 'none';
+    const pill = document.getElementById('user-pill');
+    const name = (user.user_metadata && user.user_metadata.full_name)
+      ? user.user_metadata.full_name.split(' ')[0]
+      : user.email;
+    document.getElementById('hub-user-name').textContent = '👤 ' + name;
+    pill.style.display = 'flex';
+  }
+
+  netlifyIdentity.on('init', function(user) {
+    if (user) {
+      document.addEventListener('DOMContentLoaded', function() { showHub(user); });
+    }
+  });
+
+  netlifyIdentity.on('login', function(user) {
+    showHub(user);
+    netlifyIdentity.close();
+  });
+
+  netlifyIdentity.on('logout', function() {
+    document.getElementById('lockscreen').style.display = 'flex';
+    document.getElementById('user-pill').style.display = 'none';
+  });
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1 — HERO
+════════════════════════════════════════════ -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-tag">PlaybookOS Agentic Outbound Engine</div>
+      <h1 class="hero-h1">Goal-Driven.<br>Governed.<br>Built for HaulPay.</h1>
+      <p class="hero-copy">This system sets outbound goals, runs multi-touch campaigns, learns from market response, and modifies its own tactics — but only within a precisely defined boundary of approved claims, ICP rules, sender limits, and human approval gates. It is not email automation. It is a governed outbound operating system, built to scale HaulPay's pipeline without ever operating outside the rules HaulPay has signed off on.</p>
+      <p class="hero-brand">"Autonomous where it should be. Controlled where it must be."</p>
+      <div class="hero-ctas">
+        <a href="https://dashboard.haulpayplaybook.com" target="_blank" rel="noopener" class="btn btn-primary">↗ View Dashboard</a>
+        <a href="#agent-constitution" class="btn btn-outline">Review Agent Constitution</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2 — PROGRAM STATUS BAR
+════════════════════════════════════════════ -->
+<div id="statusbar">
+  <div class="sb-inner" id="sb-inner"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3 — THE TWO ICPs
+════════════════════════════════════════════ -->
+<section id="icps" class="sec">
+  <div class="container">
+    <div class="sec-label">ICP Definition</div>
+    <h2 class="sec-title">Ideal Customer Profiles</h2>
+    <p class="sec-sub">Two pilot campaigns. Two distinct audiences. One governed system.</p>
+    <div class="icp-grid">
+
+      <!-- BROKERS -->
+      <div class="icp-card">
+        <div class="icp-head">
+          <div class="icp-ht">
+            <div class="icp-title">Freight Brokers</div>
+            <span class="badge badge-amber"><span class="dot dot-amber"></span>Pending Launch</span>
+          </div>
+          <div class="icp-subtitle">Non-asset &amp; asset-light logistics companies</div>
+        </div>
+        <div class="icp-body">
+          <div class="icp-row"><span class="icp-k">List Size</span><span class="icp-v">500 contacts (pilot)</span></div>
+          <div class="icp-row"><span class="icp-k">Products</span><span class="icp-v">Factoring + Payments</span></div>
+          <div class="icp-row"><span class="icp-k">Monthly Goal</span><span class="icp-v">8 qualified demo conversations</span></div>
+          <div class="icp-row"><span class="icp-k">Sequence</span><span class="icp-v">6-touch, 18-day</span></div>
+          <div class="icp-row"><span class="icp-k">Primary Angle</span><span class="icp-v">Fraud prevention + payment speed</span></div>
+          <div class="icp-row"><span class="icp-k">List Status</span><span class="icp-v">Pending list delivery (Monday PM)</span></div>
+        </div>
+        <button class="icp-expand-btn" onclick="toggleICP('broker')">
+          View Full Sequence &amp; KPIs <span class="icp-chevron" id="icp-chevron-broker">▼</span>
+        </button>
+        <div class="icp-expanded" id="icp-expanded-broker">
+          <div class="exp-section-title">6-Touch Sequence (18 Days)</div>
+          <div class="seq-step"><div class="seq-num">1</div><div class="seq-body"><div class="seq-day">Day 1 — Initial Outreach</div><div class="seq-desc">Fraud prevention angle — double-brokering exposure and how HaulPay's broker verification tools address it directly.</div></div></div>
+          <div class="seq-step"><div class="seq-num">2</div><div class="seq-body"><div class="seq-day">Day 3 — Follow-Up #1</div><div class="seq-desc">Pain amplification — reference the cost of bad brokers and fraud exposure in the current market. No pitch, just relevance.</div></div></div>
+          <div class="seq-step"><div class="seq-num">3</div><div class="seq-body"><div class="seq-day">Day 7 — Value Add</div><div class="seq-desc">Reference the Supreme Court case brief on fraud prevention — position as educational resource, not sales material.</div></div></div>
+          <div class="seq-step"><div class="seq-num">4</div><div class="seq-body"><div class="seq-day">Day 10 — Follow-Up #2</div><div class="seq-desc">Payment speed angle — shift to the operational side: faster settlement, same-day funding on approved invoices.</div></div></div>
+          <div class="seq-step"><div class="seq-num">5</div><div class="seq-body"><div class="seq-day">Day 14 — Pilot Offer</div><div class="seq-desc">Light CTA — "Running a limited broker pilot this quarter. If it's a fit, happy to walk you through what that looks like."</div></div></div>
+          <div class="seq-step"><div class="seq-num">6</div><div class="seq-body"><div class="seq-day">Day 18 — Final Touch</div><div class="seq-desc">Break-up style — "Closing the loop. If the timing shifts, I'll be here." Removes pressure, leaves the door open.</div></div></div>
+          <div class="kpi-strip">
+            <div class="kpi-pill"><div class="kpi-pill-label">Open Rate Target</div><div class="kpi-pill-val">≥ 35%</div></div>
+            <div class="kpi-pill"><div class="kpi-pill-label">Reply Rate Target</div><div class="kpi-pill-val">≥ 3%</div></div>
+            <div class="kpi-pill"><div class="kpi-pill-label">Monthly Demo Goal</div><div class="kpi-pill-val">8 conversations</div></div>
+            <div class="kpi-pill"><div class="kpi-pill-label">Bounce Rate Limit</div><div class="kpi-pill-val">&lt; 3%</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARRIERS -->
+      <div class="icp-card">
+        <div class="icp-head">
+          <div class="icp-ht">
+            <div class="icp-title">Carriers</div>
+            <span class="badge badge-amber"><span class="dot dot-amber"></span>Pending Launch</span>
+          </div>
+          <div class="icp-subtitle">Small fleets, 2–10 trucks</div>
+        </div>
+        <div class="icp-body">
+          <div class="icp-row"><span class="icp-k">List Size</span><span class="icp-v">5,000 contacts (trial)</span></div>
+          <div class="icp-row"><span class="icp-k">Products</span><span class="icp-v">Factoring + Fuel Cards</span></div>
+          <div class="icp-row"><span class="icp-k">Monthly Goal</span><span class="icp-v">15 qualified replies or onboarding starts</span></div>
+          <div class="icp-row"><span class="icp-k">Sequence</span><span class="icp-v">4-touch, 12-day</span></div>
+          <div class="icp-row"><span class="icp-k">Primary Angle</span><span class="icp-v">Faster invoice payment + fuel cost reduction</span></div>
+          <div class="icp-row"><span class="icp-k">List Status</span><span class="icp-v">Pending list delivery (Monday PM)</span></div>
+        </div>
+        <button class="icp-expand-btn" onclick="toggleICP('carrier')">
+          View Full Sequence &amp; KPIs <span class="icp-chevron" id="icp-chevron-carrier">▼</span>
+        </button>
+        <div class="icp-expanded" id="icp-expanded-carrier">
+          <div class="exp-section-title">4-Touch Sequence (12 Days)</div>
+          <div class="seq-step"><div class="seq-num">1</div><div class="seq-body"><div class="seq-day">Day 1 — Initial Outreach</div><div class="seq-desc">Faster invoice payment — small fleets waiting on payment kill cash flow. HaulPay offers same-day funding on approved invoices.</div></div></div>
+          <div class="seq-step"><div class="seq-num">2</div><div class="seq-body"><div class="seq-day">Day 4 — Follow-Up #1</div><div class="seq-desc">Fuel card angle — cost of diesel is a daily problem for 2–10 truck operations. HaulPay Fuel Cards reduce cost per gallon at major truck stops.</div></div></div>
+          <div class="seq-step"><div class="seq-num">3</div><div class="seq-body"><div class="seq-day">Day 8 — Value Add</div><div class="seq-desc">How it works in plain language — no factoring jargon, no confusing terms. One page on what HaulPay does for fleets your size.</div></div></div>
+          <div class="seq-step"><div class="seq-num">4</div><div class="seq-body"><div class="seq-day">Day 12 — Final Touch</div><div class="seq-desc">Soft CTA — "If the timing's off, no worries. Happy to reconnect when it makes sense." Removes friction, invites reply.</div></div></div>
+          <div class="kpi-strip">
+            <div class="kpi-pill"><div class="kpi-pill-label">Open Rate Target</div><div class="kpi-pill-val">≥ 40%</div></div>
+            <div class="kpi-pill"><div class="kpi-pill-label">Reply Rate Target</div><div class="kpi-pill-val">≥ 5%</div></div>
+            <div class="kpi-pill"><div class="kpi-pill-label">Monthly Goal</div><div class="kpi-pill-val">15 replies / starts</div></div>
+            <div class="kpi-pill"><div class="kpi-pill-label">Bounce Rate Limit</div><div class="kpi-pill-val">&lt; 3%</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="icp-note-bottom">⚙️ <em>Equipment Leasing — coming in a future phase (Level 3 strategic expansion requiring mutual approval)</em></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 4 — THE FIVE AGENTS
+════════════════════════════════════════════ -->
+<section id="agents" class="sec">
+  <div class="container">
+    <div class="sec-label">Agent Stack</div>
+    <h2 class="sec-title">The Agent Stack</h2>
+    <p class="sec-sub">Five specialized agents. Each with a defined job, defined limits, and a defined status. Click any card to reveal its full operating boundary.</p>
+    <div class="agents-grid">
+
+      <!-- Agent 1: ICP & List -->
+      <div class="agent-card" onclick="toggleAgent('icp')">
+        <div class="agent-front">
+          <span class="agent-icon">🎯</span>
+          <div class="agent-name">ICP &amp; List Agent</div>
+          <div class="agent-job">Finds, scores, and segments prospective customers from approved sources against HaulPay's ideal customer criteria.</div>
+          <div class="agent-footer">
+            <div class="agent-status-row"><span class="dot dot-green pulse"></span><span style="color:var(--green-dark)">Active</span></div>
+            <div class="agent-toggle" id="agent-toggle-icp">Details ▾</div>
+          </div>
+        </div>
+        <div class="agent-detail" id="agent-detail-icp">
+          <div class="detail-section">
+            <div class="detail-title allowed">✓ Allowed To</div>
+            <ul class="detail-list allowed-list">
+              <li>Score and rank contacts against ICP criteria</li>
+              <li>Segment lists by fleet size, business type, geography</li>
+              <li>Refresh enrichment data from Apollo</li>
+              <li>Flag contacts for suppression based on DNC signals</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-title never">✕ Never Allowed To</div>
+            <ul class="detail-list never-list">
+              <li>Add contacts outside the approved ICP definition</li>
+              <li>Use data sources not approved in the tool stack</li>
+              <li>Modify suppression rules without approval</li>
+              <li>Proceed if list quality falls below minimum standards</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent 2: Message Strategy -->
+      <div class="agent-card" onclick="toggleAgent('msg')">
+        <div class="agent-front">
+          <span class="agent-icon">✍️</span>
+          <div class="agent-name">Message Strategy Agent</div>
+          <div class="agent-job">Generates and tests message variants from approved positioning. Rule: "Changes language, not truth."</div>
+          <div class="agent-footer">
+            <div class="agent-status-row"><span class="dot dot-amber"></span><span style="color:var(--amber-dark)">Pending Campaign Launch</span></div>
+            <div class="agent-toggle" id="agent-toggle-msg">Details ▾</div>
+          </div>
+        </div>
+        <div class="agent-detail" id="agent-detail-msg">
+          <div class="detail-section">
+            <div class="detail-title allowed">✓ Allowed To</div>
+            <ul class="detail-list allowed-list">
+              <li>Write and test subject line variants within approved tone</li>
+              <li>Adjust first sentence and CTA phrasing</li>
+              <li>Branch sequence paths based on reply signals</li>
+              <li>Personalize outreach using approved enrichment fields</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-title never">✕ Never Allowed To</div>
+            <ul class="detail-list never-list">
+              <li>Change approved product claims or pricing language</li>
+              <li>Invent testimonials, case studies, or guarantees</li>
+              <li>Use fear-based or urgency-manipulation tactics</li>
+              <li>Send any variant that has not passed copy approval gate</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent 3: Deliverability -->
+      <div class="agent-card" onclick="toggleAgent('deliv')">
+        <div class="agent-front">
+          <span class="agent-icon">🛡️</span>
+          <div class="agent-name">Deliverability Agent</div>
+          <div class="agent-job">Monitors and protects HaulPay's sending domains and mailbox reputation. Holds <strong>VETO POWER</strong> over all sends.</div>
+          <div class="agent-footer">
+            <div class="agent-status-row"><span class="dot dot-green pulse"></span><span style="color:var(--green-dark)">Active (Warmup Phase)</span></div>
+            <div class="agent-toggle" id="agent-toggle-deliv">Details ▾</div>
+          </div>
+        </div>
+        <div class="agent-detail" id="agent-detail-deliv">
+          <div class="detail-section">
+            <div class="detail-title allowed">✓ Allowed To</div>
+            <ul class="detail-list allowed-list">
+              <li>Monitor spam complaint rates and bounce rates in real time</li>
+              <li>Pause sends on any domain showing health degradation</li>
+              <li>Rotate sending mailboxes within approved pool</li>
+              <li>Recommend warmup pacing adjustments</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-title never">✕ Never Allowed To</div>
+            <ul class="detail-list never-list">
+              <li>Approve a domain or mailbox that has not completed warmup</li>
+              <li>Override its own veto to meet volume targets</li>
+              <li>Allow a send if complaint rate exceeds threshold</li>
+              <li>Reduce throttle limits without human approval</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent 4: Reply Triage -->
+      <div class="agent-card" onclick="toggleAgent('reply')">
+        <div class="agent-front">
+          <span class="agent-icon">📬</span>
+          <div class="agent-name">Reply Triage Agent</div>
+          <div class="agent-job">Classifies inbound replies and routes them to the appropriate action. All replies require human approval in this phase.</div>
+          <div class="agent-footer">
+            <div class="agent-status-row"><span class="dot dot-amber"></span><span style="color:var(--amber-dark)">Awaiting First Replies</span></div>
+            <div class="agent-toggle" id="agent-toggle-reply">Details ▾</div>
+          </div>
+        </div>
+        <div class="agent-detail" id="agent-detail-reply">
+          <div class="detail-section">
+            <div class="detail-title allowed">✓ Allowed To</div>
+            <ul class="detail-list allowed-list">
+              <li>Classify replies: Interested / Objection / Unsubscribe / OOO / Referral</li>
+              <li>Draft suggested responses for human review</li>
+              <li>Route hot leads to HubSpot with priority flag</li>
+              <li>Auto-process unsubscribes immediately (no approval needed)</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-title never">✕ Never Allowed To</div>
+            <ul class="detail-list never-list">
+              <li>Send a reply without human approval (current phase)</li>
+              <li>Classify a pricing, legal, or security question as routine</li>
+              <li>Route executive escalations without flagging for Shaun</li>
+              <li>Suppress a reply without logging it</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent 5: Experiment -->
+      <div class="agent-card" onclick="toggleAgent('exp')">
+        <div class="agent-front">
+          <span class="agent-icon">🧪</span>
+          <div class="agent-name">Experiment Agent</div>
+          <div class="agent-job">Determines what to test next to improve campaign performance. One variable at a time. Quality must be confirmed before scaling.</div>
+          <div class="agent-footer">
+            <div class="agent-status-row"><span class="dot dot-amber"></span><span style="color:var(--amber-dark)">Awaiting Baseline Data</span></div>
+            <div class="agent-toggle" id="agent-toggle-exp">Details ▾</div>
+          </div>
+        </div>
+        <div class="agent-detail" id="agent-detail-exp">
+          <div class="detail-section">
+            <div class="detail-title allowed">✓ Allowed To</div>
+            <ul class="detail-list allowed-list">
+              <li>Propose A/B tests on subject lines, CTAs, send timing</li>
+              <li>Recommend sequence branching experiments</li>
+              <li>Analyze campaign performance and surface insights</li>
+              <li>Escalate proposed tests for human approval before running</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-title never">✕ Never Allowed To</div>
+            <ul class="detail-list never-list">
+              <li>Run more than one variable change per experiment cycle</li>
+              <li>Scale a variant before quality confirmation</li>
+              <li>Propose tests that change product claims or ICP definition</li>
+              <li>Override the Modification Ladder — all Level 2+ changes require approval</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 5 — MODIFICATION LADDER
+════════════════════════════════════════════ -->
+<section id="ladder">
+  <div class="container">
+    <div class="sec-label" style="color:rgba(255,255,255,.5)"><span style="background:rgba(255,255,255,.3)"></span>Governance Framework</div>
+    <h2 class="sec-title" style="color:#fff">The Modification Ladder</h2>
+    <p class="sec-sub" style="color:rgba(255,255,255,.55);max-width:640px">Every change the system wants to make is classified into one of three tiers. Tier determines whether the agent acts autonomously or waits for human approval. Click any tier to expand details.</p>
+
+    <div class="ladder-wrap">
+
+      <!-- Level 3 — Red — TOP / narrowest -->
+      <div class="ladder-tier lt-red" onclick="toggleTier('red')">
+        <div class="tier-head">
+          <div class="tier-icon">🔒</div>
+          <div class="tier-label-group">
+            <div class="tier-level">Level 3 — Strategic Modification</div>
+            <div class="tier-name">Strategic Modification</div>
+            <div class="tier-autonomy">🔴 Human Approval Required — Both Parties</div>
+          </div>
+          <div class="tier-caret" id="tier-caret-red">▼</div>
+        </div>
+        <div class="tier-body" id="tier-body-red">
+          <div class="tier-scope-label">Scope — What Requires This Level</div>
+          <ul class="tier-scope">
+            <li>New ICP definition or new market vertical</li>
+            <li>New offer, pricing tier, or product narrative</li>
+            <li>Domain or mailbox expansion beyond current pool</li>
+            <li>Any change to the Agent Constitution itself</li>
+            <li>Any guarantees, SLA language, or compliance claims</li>
+          </ul>
+          <div class="tier-example">
+            <div class="tier-example-label">Real-World Example</div>
+            <div class="tier-example-text">"Agent cannot propose Equipment Leasing as a new ICP. This is a Level 3 strategic expansion. Requires written approval from both Shaun O'Farrell (Playbook Ventures) and Steve Kochan (HaulPay) before the system may target that segment."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ladder-connector"><div class="connector-line"></div><div class="connector-arrow">↑</div></div>
+
+      <!-- Level 2 — Amber — MIDDLE -->
+      <div class="ladder-tier lt-amber" onclick="toggleTier('amber')">
+        <div class="tier-head">
+          <div class="tier-icon">⏱</div>
+          <div class="tier-label-group">
+            <div class="tier-level">Level 2 — Campaign Modification</div>
+            <div class="tier-name">Campaign Modification</div>
+            <div class="tier-autonomy">🟡 Human Approval Required</div>
+          </div>
+          <div class="tier-caret" id="tier-caret-amber">▼</div>
+        </div>
+        <div class="tier-body" id="tier-body-amber">
+          <div class="tier-scope-label">Scope — What Requires This Level</div>
+          <ul class="tier-scope">
+            <li>New pain angle or message framing not in current approved set</li>
+            <li>New sequence structure (length, step count, cadence shift)</li>
+            <li>Adding a new target title or sub-segment</li>
+            <li>New asset (case study, one-pager) referenced in sequence</li>
+            <li>New prospect segment or sub-ICP</li>
+          </ul>
+          <div class="tier-example">
+            <div class="tier-example-label">Real-World Example</div>
+            <div class="tier-example-text">"Agent proposes adding a 'fuel card cost reduction' angle to Carrier sequence, Step 2. Flagged for approval. Shaun reviews and approves. Agent proceeds."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ladder-connector"><div class="connector-line"></div><div class="connector-arrow">↑</div></div>
+
+      <!-- Level 1 — Green — BOTTOM / widest -->
+      <div class="ladder-tier lt-green" onclick="toggleTier('green')">
+        <div class="tier-head">
+          <div class="tier-icon">⚡</div>
+          <div class="tier-label-group">
+            <div class="tier-level">Level 1 — Light Modification</div>
+            <div class="tier-name">Light Modification</div>
+            <div class="tier-autonomy">✅ Autonomous — No Approval Needed</div>
+          </div>
+          <div class="tier-caret" id="tier-caret-green">▼</div>
+        </div>
+        <div class="tier-body" id="tier-body-green">
+          <div class="tier-scope-label">Scope — What the Agent May Do Without Asking</div>
+          <ul class="tier-scope">
+            <li>Subject lines and first-sentence variants</li>
+            <li>CTA phrasing within approved style</li>
+            <li>Follow-up timing and spacing adjustments</li>
+            <li>Personalization token substitution</li>
+            <li>Sequence branching based on reply signal</li>
+          </ul>
+          <div class="tier-rule">Rule: All changes must stay within approved copy boundaries. The agent may change language, but not truth.</div>
+          <div class="tier-example">
+            <div class="tier-example-label">Real-World Example</div>
+            <div class="tier-example-text">"Agent changed subject line from 'HaulPay Factoring for Freight Brokers' to 'Getting paid faster on brokered loads — worth 15 min?' → No approval needed. Copy rule: no claims, curiosity framing."</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 6 — AGENT CONSTITUTION
+════════════════════════════════════════════ -->
+<section id="agent-constitution" class="sec">
+  <div class="container">
+    <div class="sec-label">Governance Document</div>
+    <h2 class="sec-title">The Rules the Agent Lives By</h2>
+    <p class="sec-sub">The Agent Constitution defines the operating boundary of the entire system. No agent may act outside it.</p>
+    <div class="const-grid">
+      <div class="const-col">
+        <h3 style="color:var(--green-dark)">What the Agent Can Optimize</h3>
+        <ul>
+          <li>ICP fit and contact scoring</li>
+          <li>List segmentation and targeting</li>
+          <li>Message personalization (within approved fields)</li>
+          <li>Subject line variants and A/B testing</li>
+          <li>Pain angle framing (within approved set)</li>
+          <li>CTA style and phrasing</li>
+          <li>Follow-up timing and sequence spacing</li>
+          <li>Sequence branching logic</li>
+          <li>Lead scoring thresholds</li>
+          <li>CRM routing rules</li>
+          <li>Reporting insights and performance summaries</li>
+        </ul>
+      </div>
+      <div class="const-col">
+        <h3 style="color:var(--red-dark)">What the Agent Cannot Change</h3>
+        <ul>
+          <li>Product truth, pricing, or terms</li>
+          <li>Legal or compliance claims</li>
+          <li>Customer references or case study results</li>
+          <li>Guarantees or SLAs of any kind</li>
+          <li>Security or data handling claims</li>
+          <li>Brand voice outside approved range</li>
+          <li>Sending volume limits or domain pool</li>
+          <li>Suppression rules or DNC handling</li>
+          <li>Unsubscribe processing</li>
+          <li>The approved offer structure</li>
+        </ul>
+      </div>
+      <div class="const-col">
+        <h3 style="color:var(--amber-dark)">When the Agent Must Stop</h3>
+        <ul>
+          <li>Spam complaint rate rises above threshold</li>
+          <li>Bounce rate exceeds domain safety limit</li>
+          <li>Negative reply rate spikes materially</li>
+          <li>Domain health score drops</li>
+          <li>Message claims cannot be confirmed accurate</li>
+          <li>A prospect has asked to stop receiving mail</li>
+          <li>A reply requires legal, pricing, security, or executive judgment</li>
+          <li>Deliverability Agent issues a veto</li>
+        </ul>
+      </div>
+    </div>
+    <div class="const-callout">
+      <p>This constitution governs the entire system. Any modification to these rules requires written approval from both <strong>Shaun O'Farrell (Playbook Ventures LLC)</strong> and <strong>Steve Kochan (HaulPay / Dakota Financial LLC)</strong>.</p>
+      <span class="contract-tag">Contract: PV-HP-GTM-2026-101A</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 7 — APPROVED CLAIM LIBRARY
+════════════════════════════════════════════ -->
+<section id="claims" class="sec">
+  <div class="container">
+    <div class="sec-label">Message Governance</div>
+    <h2 class="sec-title">Approved Claim Library <span style="font-size:.75em;font-weight:400;color:var(--ts)">(Preview)</span></h2>
+    <p class="sec-sub">These are examples of what the system is and is not allowed to say. Every live variant traces back to an approved claim block.</p>
+    <div class="claims-grid">
+
+      <div class="claim-card">
+        <div class="claim-head"><div class="claim-topic">Factoring Value Proposition</div></div>
+        <div class="claim-body">
+          <div class="claim-item claim-approved">
+            <div class="claim-label yes">✅ Approved</div>
+            <div class="claim-text">"HaulPay offers same-day funding on approved invoices — no long waits, no hidden fees."</div>
+          </div>
+          <div class="claim-item claim-not">
+            <div class="claim-label no">❌ Not Approved</div>
+            <div class="claim-text">"HaulPay guarantees same-day payment on every invoice."</div>
+            <div class="claim-reason">Reason: "Guarantees" language not approved. Adds legal exposure.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="claim-card">
+        <div class="claim-head"><div class="claim-topic">Fraud Prevention</div></div>
+        <div class="claim-body">
+          <div class="claim-item claim-approved">
+            <div class="claim-label yes">✅ Approved</div>
+            <div class="claim-text">"HaulPay's payment rails include broker verification tools designed to reduce double-brokering exposure."</div>
+          </div>
+          <div class="claim-item claim-not">
+            <div class="claim-label no">❌ Not Approved</div>
+            <div class="claim-text">"HaulPay eliminates fraud in freight payments."</div>
+            <div class="claim-reason">Reason: Absolute claim. Not supportable. Not approved.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="claim-card">
+        <div class="claim-head"><div class="claim-topic">Payment Speed</div></div>
+        <div class="claim-body">
+          <div class="claim-item claim-approved">
+            <div class="claim-label yes">✅ Approved</div>
+            <div class="claim-text">"Carriers using HaulPay report getting paid faster compared to traditional factoring timelines."</div>
+          </div>
+          <div class="claim-item claim-not">
+            <div class="claim-label no">❌ Not Approved</div>
+            <div class="claim-text">"HaulPay pays 2x faster than every other factoring company."</div>
+            <div class="claim-reason">Reason: Unverified comparative. Not a claim on file.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="claim-card">
+        <div class="claim-head"><div class="claim-topic">Pilot Offer Framing</div></div>
+        <div class="claim-body">
+          <div class="claim-item claim-approved">
+            <div class="claim-label yes">✅ Approved</div>
+            <div class="claim-text">"We're running a limited pilot with freight brokers this quarter — if it's a fit, happy to walk you through what that looks like."</div>
+          </div>
+          <div class="claim-item claim-not">
+            <div class="claim-label no">❌ Not Approved</div>
+            <div class="claim-text">"Sign up now — limited spots available, don't miss out."</div>
+            <div class="claim-reason">Reason: Urgency manipulation. Outside approved tone range.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 8 — AUTONOMY TABLE
+════════════════════════════════════════════ -->
+<section id="autonomy" class="sec">
+  <div class="container">
+    <div class="sec-label">System Reference</div>
+    <h2 class="sec-title">System Autonomy Reference</h2>
+    <p class="sec-sub">Every action the system takes is pre-classified. Filter by autonomy level below.</p>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterAutonomy('all',this)">All Actions</button>
+      <button class="filter-btn f-green" onclick="filterAutonomy('green',this)"><span class="dot dot-green"></span>Autonomous</button>
+      <button class="filter-btn f-amber" onclick="filterAutonomy('amber',this)"><span class="dot dot-amber"></span>Approval Required</button>
+      <button class="filter-btn f-red" onclick="filterAutonomy('red',this)"><span class="dot dot-red"></span>Never Allowed</button>
+    </div>
+    <div class="table-wrap">
+      <table id="autonomy-table">
+        <thead><tr><th>Action</th><th>Description</th><th>Autonomy Level</th></tr></thead>
+        <tbody>
+          <tr data-level="green"><td class="td-action">Subject line A/B test</td><td class="td-desc">Test variants within approved copy boundary</td><td><span class="al al-green"><span class="dot dot-green"></span>Autonomous</span></td></tr>
+          <tr data-level="green"><td class="td-action">Follow-up timing adjustment</td><td class="td-desc">Change days between sequence steps</td><td><span class="al al-green"><span class="dot dot-green"></span>Autonomous</span></td></tr>
+          <tr data-level="green"><td class="td-action">First-sentence personalization</td><td class="td-desc">Substitute approved personalization tokens</td><td><span class="al al-green"><span class="dot dot-green"></span>Autonomous</span></td></tr>
+          <tr data-level="green"><td class="td-action">CTA phrasing variant</td><td class="td-desc">Reword call-to-action within approved style</td><td><span class="al al-green"><span class="dot dot-green"></span>Autonomous</span></td></tr>
+          <tr data-level="green"><td class="td-action">Reply classification</td><td class="td-desc">Tag inbound replies by intent category</td><td><span class="al al-green"><span class="dot dot-green"></span>Autonomous</span></td></tr>
+          <tr data-level="green"><td class="td-action">Unsubscribe processing</td><td class="td-desc">Honor unsubscribe requests immediately</td><td><span class="al al-green"><span class="dot dot-green"></span>Autonomous</span></td></tr>
+          <tr data-level="green"><td class="td-action">Domain health monitoring</td><td class="td-desc">Monitor and alert on deliverability signals</td><td><span class="al al-green"><span class="dot dot-green"></span>Autonomous</span></td></tr>
+          <tr data-level="green"><td class="td-action">Deliverability veto</td><td class="td-desc">Pause sends when domain health drops</td><td><span class="al al-green"><span class="dot dot-green"></span>Autonomous</span></td></tr>
+          <tr data-level="amber"><td class="td-action">New pain angle</td><td class="td-desc">Add a message framing not in current approved set</td><td><span class="al al-amber"><span class="dot dot-amber"></span>Approval Required</span></td></tr>
+          <tr data-level="amber"><td class="td-action">New sequence structure</td><td class="td-desc">Change step count, cadence, or sequence length</td><td><span class="al al-amber"><span class="dot dot-amber"></span>Approval Required</span></td></tr>
+          <tr data-level="amber"><td class="td-action">New target title or sub-segment</td><td class="td-desc">Expand targeting to a new contact profile</td><td><span class="al al-amber"><span class="dot dot-amber"></span>Approval Required</span></td></tr>
+          <tr data-level="amber"><td class="td-action">New asset reference</td><td class="td-desc">Add a case study, one-pager, or resource to a sequence</td><td><span class="al al-amber"><span class="dot dot-amber"></span>Approval Required</span></td></tr>
+          <tr data-level="amber"><td class="td-action">Reply response (current phase)</td><td class="td-desc">Send a reply to any inbound message</td><td><span class="al al-amber"><span class="dot dot-amber"></span>Approval Required</span></td></tr>
+          <tr data-level="red"><td class="td-action">New ICP or market vertical</td><td class="td-desc">Target a new audience category</td><td><span class="al al-red"><span class="dot dot-red"></span>Strategic Approval</span></td></tr>
+          <tr data-level="red"><td class="td-action">Pricing or terms language</td><td class="td-desc">Reference specific pricing, rates, or SLAs</td><td><span class="al al-red"><span class="dot dot-red"></span>Never</span></td></tr>
+          <tr data-level="red"><td class="td-action">Legal or compliance claims</td><td class="td-desc">Make regulatory or compliance statements</td><td><span class="al al-red"><span class="dot dot-red"></span>Never</span></td></tr>
+          <tr data-level="red"><td class="td-action">Domain or mailbox expansion</td><td class="td-desc">Add domains or mailboxes beyond approved pool</td><td><span class="al al-red"><span class="dot dot-red"></span>Strategic Approval</span></td></tr>
+          <tr data-level="red"><td class="td-action">Modify the Agent Constitution</td><td class="td-desc">Change the governing rules of the system</td><td><span class="al al-red"><span class="dot dot-red"></span>Both Parties Required</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 9 — WHAT HAULPAY CONTROLS
+════════════════════════════════════════════ -->
+<section id="controls">
+  <div class="container">
+    <div class="sec-label" style="color:rgba(34,197,94,.7)">Authority Structure</div>
+    <h2 class="sec-title" style="color:#fff">What HaulPay Always Controls</h2>
+    <p class="sec-sub" style="color:rgba(255,255,255,.5)">The system operates under a defined authority structure. These rights belong to HaulPay — exclusively and irrevocably.</p>
+    <div class="controls-grid">
+      <div class="ctrl-card">
+        <span class="ctrl-icon">📄</span>
+        <div class="ctrl-title">All Campaign Copy</div>
+        <div class="ctrl-body">Nothing sends without written approval from HaulPay. Every sequence, every variant, every subject line — reviewed and signed off before it reaches a prospect.</div>
+      </div>
+      <div class="ctrl-card">
+        <span class="ctrl-icon">🏷</span>
+        <div class="ctrl-title">All Product Claims</div>
+        <div class="ctrl-body">The agent never represents terms, pricing, guarantees, or product capabilities without an explicitly approved claim on file. No improvisation on facts.</div>
+      </div>
+      <div class="ctrl-card">
+        <span class="ctrl-icon">🌐</span>
+        <div class="ctrl-title">Domain &amp; Mailbox Activation</div>
+        <div class="ctrl-body">Every domain and mailbox is proposed in the dashboard and requires HaulPay approval before purchase or activation. No infrastructure moves without sign-off.</div>
+      </div>
+      <div class="ctrl-card">
+        <span class="ctrl-icon">⏸</span>
+        <div class="ctrl-title">Instant Campaign Pause</div>
+        <div class="ctrl-body">One click in the dashboard pauses all active sends across every sequence, domain, and mailbox. No escalation needed. Immediate.</div>
+      </div>
+      <div class="ctrl-card">
+        <span class="ctrl-icon">⚖️</span>
+        <div class="ctrl-title">The Agent Constitution</div>
+        <div class="ctrl-body">Any change to the rules governing agent behavior requires written sign-off from both Steve Kochan (HaulPay) and Shaun O'Farrell (Playbook Ventures). The rules cannot change without HaulPay's consent.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 10 — TOOL STACK
+════════════════════════════════════════════ -->
+<section id="tools" class="sec">
+  <div class="container">
+    <div class="sec-label">Technology</div>
+    <h2 class="sec-title">The Technology Stack</h2>
+    <p class="sec-sub">Six tools. One governed system.</p>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <span class="tool-logo">🔍</span>
+        <div class="tool-name">Apollo</div>
+        <div class="tool-role">List building and contact enrichment</div>
+        <div class="tool-status"><span class="dot dot-green pulse"></span>Active</div>
+      </div>
+      <div class="tool-card">
+        <span class="tool-logo">⚡</span>
+        <div class="tool-name">Instantly</div>
+        <div class="tool-role">Email sequences, mailboxes, warmup, sender rotation</div>
+        <div class="tool-status"><span class="dot dot-green pulse"></span>Active (Warmup)</div>
+      </div>
+      <div class="tool-card">
+        <span class="tool-logo">🔗</span>
+        <div class="tool-name">HubSpot</div>
+        <div class="tool-role">CRM, lead routing, approval tracking</div>
+        <div class="tool-status"><span class="dot dot-green pulse"></span>Active</div>
+      </div>
+      <div class="tool-card">
+        <span class="tool-logo">🧱</span>
+        <div class="tool-name">Clay</div>
+        <div class="tool-role">Personalization enrichment</div>
+        <div class="tool-status"><span class="dot dot-amber"></span>Pending Approval</div>
+      </div>
+      <div class="tool-card">
+        <span class="tool-logo">☁️</span>
+        <div class="tool-name">Cloudflare</div>
+        <div class="tool-role">Domain management and Worker sync layer</div>
+        <div class="tool-status"><span class="dot dot-green pulse"></span>Active</div>
+      </div>
+      <div class="tool-card">
+        <span class="tool-logo">📊</span>
+        <div class="tool-name">Dashboard</div>
+        <div class="tool-role">Program hub, status updates, approval interface</div>
+        <div class="tool-status"><span class="dot dot-green pulse"></span>Active</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 11 — THE THREE RULES
+════════════════════════════════════════════ -->
+<section id="three-rules">
+  <div class="container">
+    <div class="rules-wrap">
+      <div class="rule-block" id="rule-1">
+        <p class="rule-quote">"The agent may change language, but not truth."</p>
+      </div>
+      <div class="rule-block" id="rule-2">
+        <p class="rule-quote">"The agent may ask what to try next, but not decide what it is allowed to promise."</p>
+      </div>
+      <div class="rule-block" id="rule-3">
+        <p class="rule-quote green">"Autonomous where it should be.<br>Controlled where it must be."</p>
+      </div>
+      <div class="rules-divider"></div>
+      <p class="rules-footer-text">These three rules govern every decision made by the PlaybookOS Agentic Outbound Engine. They cannot be overridden by any agent.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 12 — FOOTER
+════════════════════════════════════════════ -->
+<footer id="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-col">
+        <strong>Playbook Ventures LLC × HaulPay (Dakota Financial LLC)</strong><br>
+        Contract: <span style="font-family:var(--mono);color:rgba(255,255,255,.55)">PV-HP-GTM-2026-101A</span><br>
+        Effective: June 9, 2026<br>
+        Dashboard: <a href="https://dashboard.haulpayplaybook.com" target="_blank">dashboard.haulpayplaybook.com ↗</a>
+      </div>
+      <div class="footer-col">
+        <strong>Program Operator</strong><br>
+        Shaun O'Farrell<br>
+        Managing Partner, Playbook Ventures LLC<br>
+        shaun@playbookventures.io
+      </div>
+    </div>
+    <div class="footer-bottom">
+      PlaybookOS Agentic Outbound Engine — Operated under contract PV-HP-GTM-2026-101A<br>
+      by Playbook Ventures LLC for HaulPay / Dakota Financial LLC.<br>
+      All agent actions governed by the Agent Constitution signed June 9, 2026.
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════ -->
+<script>
+// ── STATUS BAR ─────────────────────────────────────────────────────────
+const SB_FIELDS = [
+  { id:'phase',    label:'Phase',             value:'Phase 1 — Infrastructure & Deliverability Readiness', dot:'amber' },
+  { id:'broker',   label:'Broker Campaign',   value:'Pending Launch',  dot:'amber' },
+  { id:'carrier',  label:'Carrier Campaign',  value:'Pending Launch',  dot:'amber' },
+  { id:'domains',  label:'Domains Active',    value:'0 / 10',          dot:'amber' },
+  { id:'mailboxes',label:'Mailboxes Active',  value:'0 / 30',          dot:'amber' },
+  { id:'warmup',   label:'Warmup Status',     value:'In Progress',     dot:'amber' },
+];
+
+function initStatusBar() {
+  const inner = document.getElementById('sb-inner');
+  inner.innerHTML = SB_FIELDS.map(f => {
+    const stored = localStorage.getItem('playbook_os_sb_' + f.id);
+    const storedDot = localStorage.getItem('playbook_os_dot_' + f.id);
+    const val = stored || f.value;
+    const dot = storedDot || f.dot;
+    return `<div class="sb-field" id="sbf-${f.id}">
+      <div class="sb-label">${f.label}</div>
+      <div class="sb-row">
+        <span class="dot dot-${dot} ${dot==='green'?'pulse':''}" id="sbd-${f.id}" onclick="cycleDot('${f.id}',event)" title="Click to change status"></span>
+        <span class="sb-val" id="sbv-${f.id}" onclick="editField('${f.id}')">${val}</span>
+        <input class="sb-input" id="sbi-${f.id}" value="${val}"
+          onblur="saveField('${f.id}')"
+          onkeydown="if(event.key==='Enter')saveField('${f.id}');if(event.key==='Escape')cancelEdit('${f.id}')" />
+        <span class="sb-pencil" onclick="editField('${f.id}')">✎</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function editField(id) {
+  const val = document.getElementById('sbv-' + id);
+  const inp = document.getElementById('sbi-' + id);
+  val.style.display = 'none';
+  inp.style.display = 'block';
+  inp.focus(); inp.select();
+}
+
+function saveField(id) {
+  const val = document.getElementById('sbv-' + id);
+  const inp = document.getElementById('sbi-' + id);
+  const newVal = inp.value.trim() || val.textContent;
+  val.textContent = newVal;
+  localStorage.setItem('playbook_os_sb_' + id, newVal);
+  val.style.display = '';
+  inp.style.display = 'none';
+}
+
+function cancelEdit(id) {
+  const val = document.getElementById('sbv-' + id);
+  const inp = document.getElementById('sbi-' + id);
+  inp.value = val.textContent;
+  val.style.display = '';
+  inp.style.display = 'none';
+}
+
+const DOT_CYCLE = ['amber','green','red'];
+function cycleDot(id, e) {
+  e.stopPropagation();
+  const dotEl = document.getElementById('sbd-' + id);
+  const cur = localStorage.getItem('playbook_os_dot_' + id) || SB_FIELDS.find(f=>f.id===id).dot;
+  const idx = DOT_CYCLE.indexOf(cur);
+  const next = DOT_CYCLE[(idx + 1) % DOT_CYCLE.length];
+  dotEl.className = `dot dot-${next}${next==='green'?' pulse':''}`;
+  localStorage.setItem('playbook_os_dot_' + id, next);
+}
+
+// ── ICP CARDS ──────────────────────────────────────────────────────────
+function toggleICP(id) {
+  const panel = document.getElementById('icp-expanded-' + id);
+  const chevron = document.getElementById('icp-chevron-' + id);
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  chevron.classList.toggle('open', !isOpen);
+  chevron.textContent = isOpen ? '▼' : '▲';
+}
+
+// ── AGENT CARDS ────────────────────────────────────────────────────────
+function toggleAgent(id) {
+  const detail = document.getElementById('agent-detail-' + id);
+  const toggle = document.getElementById('agent-toggle-' + id);
+  const isOpen = detail.classList.contains('open');
+  detail.classList.toggle('open', !isOpen);
+  toggle.textContent = isOpen ? 'Details ▾' : 'Collapse ▴';
+}
+
+// ── MODIFICATION LADDER ────────────────────────────────────────────────
+function toggleTier(id) {
+  const body = document.getElementById('tier-body-' + id);
+  const caret = document.getElementById('tier-caret-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  caret.classList.toggle('open', !isOpen);
+  caret.textContent = isOpen ? '▼' : '▲';
+}
+
+// ── AUTONOMY TABLE FILTER ──────────────────────────────────────────────
+let activeFilter = 'all';
+function filterAutonomy(level, btn) {
+  activeFilter = level;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#autonomy-table tbody tr').forEach(row => {
+    const rl = row.dataset.level;
+    row.style.display = (level === 'all' || rl === level) ? '' : 'none';
+  });
+}
+
+// ── THREE RULES SCROLL ANIMATION ───────────────────────────────────────
+function initRulesAnimation() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.25 });
+  document.querySelectorAll('.rule-block').forEach(el => observer.observe(el));
+}
+
+// ── HERO CANVAS ANIMATION ──────────────────────────────────────────────
+function initCanvas() {
+  const canvas = document.getElementById('hero-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  const N = 48;
+  const MAX_DIST = 140;
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function mkParticle() {
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - .5) * .35,
+      vy: (Math.random() - .5) * .35,
+      r: Math.random() * 1.8 + .8
+    };
+  }
+
+  function init() {
+    resize();
+    particles = Array.from({ length: N }, mkParticle);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    for (let i = 0; i < N; i++) {
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < -20) p.x = W + 20;
+      if (p.x > W + 20) p.x = -20;
+      if (p.y < -20) p.y = H + 20;
+      if (p.y > H + 20) p.y = -20;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(27,79,216,.6)';
+      ctx.fill();
+      for (let j = i + 1; j < N; j++) {
+        const q = particles[j];
+        const dx = p.x - q.x, dy = p.y - q.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < MAX_DIST) {
+          const alpha = (1 - dist / MAX_DIST) * 0.18;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = `rgba(27,79,216,${alpha})`;
+          ctx.lineWidth = .8;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', () => { resize(); });
+  init();
+  draw();
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  initStatusBar();
+  initCanvas();
+  initRulesAnimation();
+});
+</script>
+</body>
+</html>
